@@ -1,0 +1,22 @@
+---------------------------------- Arghir Monica-Andreea 332CA ------------------------------------
+
+    Pentru a paraleliza algoritmul Marching Squares, am ales sa ma folosesc de conceptul de
+bariera. Astfel mi-am creat o bariera pe care am pasat-o ca argument alaturi de restul
+informatiilor de care aveau nevoie functiile paralelizate precum matricea de grid, imaginea
+modificata, imaginea initiala, numarul de threaduri, id-ul fiecarui thread si altele.
+    Am modificat scheletul temei astfel incat pentru imaginea noua, in cazul in care modificam
+dimensiunile, sa se aloce memoria o singura data, ci nu pentru fiecare thread in parte. De asemenea,
+din acelasi motiv am alocat memoria pentru matricea de grid, tot in main, inaintea de crearea
+threadurilor. Mi-am construit o structura cu toate datele necesare functiilor care se folosesc
+de threaduri, astfel incat sa pot transmite toata informatia in functia de pthread_create. Bariera
+am initializat-o in main si am copiat-o in structura.
+    In functia solve() care se ocupa de paralelizare, am apelat functiile rescale(), sample_grid()
+si march(). Intre acestea am pus cate o bariera, astfel incat sa nu se inceapa procesul de
+construire a matricei grid pana cand imaginea nu era redimensionata complet si de asemenea, sa nu
+se inceapa procesul de marching pana ce toate threadurile au reusit sa-si completeze partea lor
+din matricea grid.
+    In interiorul fiecarei dintre aceste 3 functii paralelizate, am calculat punctul de inceput
+(start) si cel de sfarsit (end) al fiecarui thread in parte, calcul bazat pe id-ul threadului
+respectiv si pe numarul total al acestora. Am impartit rezolvarea problemei astfel incat fiecare
+thread s-a ocupat de o parte din imagine in functie de linii (de exemplu primul thread s-a ocupat
+de liniile 0-63, al doilea de 64-127, al treilea de 128-191 si ultimul de 192-256).
